@@ -2,6 +2,7 @@ import { $, component$, Signal, useSignal } from '@builder.io/qwik';
 import { ReportTimeEntry } from '@models/report';
 import { useGroupList } from 'src/hooks/report/useGroupList';
 import { t } from 'src/locale/labels';
+import { formatDateStringMDY } from 'src/utils/dates';
 import { handlePrint } from 'src/utils/handlePrint';
 import { UUID } from 'src/utils/uuid';
 import { OptionDropdown } from '../form/OptionDropdown';
@@ -34,9 +35,36 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 
 	return (
 		<div ref={groupByRef} class='py-3'>
-			<div class='brickly-logo-pdf-download flex hidden justify-end'>
+			<div class='brickly-logo-pdf-download hidden justify-end'>
 				<div class='px-6 py-4 sm:text-center [&_svg]:sm:inline'>
 					{getIcon('BricklyRedLogo')}
+				</div>
+			</div>
+			<div class='hide-on-pdf-download mb-4 flex items-center justify-between'>
+				<h2 class='text-2xl font-bold text-darkgray-900'>Summary report</h2>
+				<div class='flex flex-none flex-row items-center gap-2'>
+					<OptionDropdown
+						id='download-dropdown-groupby'
+						icon={getIcon('Download')}
+						label={t('REPORT_DOWNLOAD_LABEL')}
+						options={[
+							{
+								value: t('CSV_LABEL'),
+								onChange: handlerDownloadCSV,
+							},
+							{
+								value: t('PDF_LABEL'),
+								onChange: $(() => handlePrint(groupByRef)),
+							},
+						]}
+					/>
+				</div>
+			</div>
+
+			<div class='text-darkgray-700 mb-3 text-sm'>
+				<span class='text-[12px] text-[#464650]'>{t('TIME_PERIOD_LABEL')}</span>
+				<div class='mt-1 font-bold'>
+					{formatDateStringMDY(from.value)} - {formatDateStringMDY(to.value)}
 				</div>
 			</div>
 			<div class='hide-on-pdf-download flex items-center gap-2 sm:flex-col md:flex-row md:justify-between lg:flex-row lg:justify-between'>
@@ -83,24 +111,6 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 						{t('PLANNED_HOURS_DESCRIPTION')}
 						<div class='tooltip-arrow' data-popper-arrow></div>
 					</div>
-				</div>
-
-				<div class='flex flex-none flex-row items-center gap-2'>
-					<OptionDropdown
-						id='download-dropdown-groupby'
-						icon={getIcon('Download')}
-						label={t('REPORT_DOWNLOAD_LABEL')}
-						options={[
-							{
-								value: t('CSV_LABEL'),
-								onChange: handlerDownloadCSV,
-							},
-							{
-								value: t('PDF_LABEL'),
-								onChange: $(() => handlePrint(groupByRef)),
-							},
-						]}
-					/>
 				</div>
 			</div>
 

@@ -2,9 +2,7 @@ import { $, component$, Signal, useSignal } from '@builder.io/qwik';
 import { ReportTimeEntry } from '@models/report';
 import { useGroupList } from 'src/hooks/report/useGroupList';
 import { t } from 'src/locale/labels';
-import { getReportTotalHours, getReportTotalPlannedHours } from 'src/utils/chart';
 import { handlePrint } from 'src/utils/handlePrint';
-import { getFormattedHours } from 'src/utils/timesheet';
 import { UUID } from 'src/utils/uuid';
 import { OptionDropdown } from '../form/OptionDropdown';
 import { Select } from '../form/Select';
@@ -106,103 +104,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 				</div>
 			</div>
 
-			<div class='relative overflow-x-auto'>
-				<table class='w-full text-left rtl:text-right'>
-					<thead class='text-xs text-gray-700'>
-						<tr>
-							<th scope='col' class='flex-1 py-3 text-xs font-normal text-dark-grey'>
-								{t('NAME_LABEL')}
-							</th>
-							{showPlannedHours.value && (
-								<th
-									scope='col'
-									class='w-64 flex-auto py-3 text-right text-xs font-normal text-dark-grey'
-								>
-									{t('PLANNED_HOURS_LABEL')}
-								</th>
-							)}
-							<th
-								scope='col'
-								class='w-64 flex-auto py-3 text-right text-xs font-normal text-dark-grey'
-							>
-								{t('DURATION_LABEL')}
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class='border-b bg-white text-base font-bold text-dark-grey'>
-							<td class='flex-1 pb-2'>
-								{selectOptions[selectOptions.indexOf(valueL1Selected.value)]}
-							</td>
-							{showPlannedHours.value && (
-								<td class='w-64 flex-auto pb-2 text-right'>
-									{getFormattedHours(getReportTotalPlannedHours(data.value))} h
-								</td>
-							)}
-							<td class='w-64 flex-auto pb-2 text-right'>
-								{getFormattedHours(getReportTotalHours(data.value))} h
-							</td>
-						</tr>
-						{/* GROUP BY L1 */}
-						{results.value.map((row) => (
-							<>
-								<tr class='bg-white'>
-									<td class='flex-1 py-4 pl-4 text-base'>
-										{row.key !== '' ? row.key : t('EMPTY_LABEL')}
-									</td>
-									{showPlannedHours.value && (
-										<td class='w-64 flex-auto py-4 text-right text-base'>
-											{getFormattedHours(row.plannedHours)} h
-										</td>
-									)}
-									<td class='w-64 flex-auto py-4 text-right text-base'>
-										{getFormattedHours(row.duration)} h
-									</td>
-								</tr>
-								{/* GROUP BY L2 */}
-								{row.subGroups?.map((level2Row) => (
-									<>
-										<tr class='bg-white'>
-											<td class='flex-1 py-1 pl-12 text-base'>
-												{level2Row.key !== ''
-													? level2Row.key
-													: t('EMPTY_LABEL')}
-											</td>
-											{showPlannedHours.value && (
-												<td class='w-64 flex-auto py-4 text-right text-base'>
-													{getFormattedHours(level2Row.plannedHours)} h
-												</td>
-											)}
-											<td class='w-64 flex-auto py-1 text-right text-base'>
-												{getFormattedHours(level2Row.duration)} h
-											</td>
-										</tr>
-										{/* GROUP BY L3 */}
-										{level2Row.subGroups?.map((level23Row) => (
-											<tr class='bg-white'>
-												<td class='flex-1 py-1 pl-20 text-base'>
-													{level23Row.key !== ''
-														? level23Row.key
-														: t('EMPTY_LABEL')}
-												</td>
-												{showPlannedHours.value && (
-													<td class='w-64 flex-auto py-4 text-right text-base'>
-														{getFormattedHours(level23Row.plannedHours)}{' '}
-														h
-													</td>
-												)}
-												<td class='w-64 flex-auto py-1 text-right text-base'>
-													{getFormattedHours(level23Row.duration)} h
-												</td>
-											</tr>
-										))}
-									</>
-								))}
-							</>
-						))}
-					</tbody>
-				</table>
-			</div>
+			<div id='grouped-results' />
 		</div>
 	);
 });

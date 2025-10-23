@@ -203,10 +203,13 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 																			<div class='text-[12px] text-[#464650]'>
 																				{t(
 																					'PLANNED_HOURS_LABEL'
-																				)}
+																				) ??
+																					'Planned hours'}
 																			</div>
 																			<div class='text-[16px] font-bold text-[#464650]'>
-																				{`${formatHours(planned)} (${Math.round(planned / 8)} ${'days'})`}
+																				{formatHours(
+																					item?.plannedHours
+																				)}
 																			</div>
 																		</div>
 																	)}
@@ -279,11 +282,9 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 												</div>
 											)}
 
-											{level < maxLevel && item?.subGroups?.length ? (
-												<div class='mt-2'>
-													{LevelList(item.subGroups, level + 1)}
-												</div>
-											) : null}
+											{level < maxLevel && item?.subGroups?.length
+												? LevelList(item.subGroups, level + 1)
+												: null}
 										</li>
 									);
 								})}

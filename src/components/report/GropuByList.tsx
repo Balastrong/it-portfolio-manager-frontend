@@ -104,7 +104,194 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 				</div>
 			</div>
 
-			<div id='grouped-results' />
+			<div id='grouped-results' class='mt-4'>
+				{(() => {
+					// decide how many levels to render based on selected groups
+					const maxLevel =
+						valueL2Selected.value === t('NONE_LABEL')
+							? 1
+							: valueL3Selected.value === t('NONE_LABEL')
+								? 2
+								: 3;
+
+					const formatHours = (n?: number) =>
+						typeof n === 'number' ? `${Number(n.toFixed(2))} h` : '-';
+
+					const l1Label = valueL1Selected.value;
+					const l2Label = valueL2Selected.value;
+					const l3Label = valueL3Selected.value;
+
+					const LevelList = (items: any[], level: number) => {
+						if (!items?.length) return null;
+						return (
+							<ul
+								class={['space-y-2', level > 1 ? 'ml-3 border-l pl-3' : ''].join(
+									' '
+								)}
+							>
+								{items.map((item) => {
+									// progress values for level 1
+									const planned = Number(item?.plannedHours || 0);
+									const spent = Number(item?.duration || 0);
+									const pctSpent =
+										planned > 0
+											? Math.min(100, Math.round((spent / planned) * 100))
+											: 0;
+									const pctLeft = planned > 0 ? 100 - pctSpent : 0;
+
+									return (
+										<li>
+											{level === 1 ? (
+												<div class='flex flex-col gap-2 rounded-md border border-[#d7dee3] bg-white p-3'>
+													<div class='flex items-end justify-between gap-4'>
+														<div class='min-w-0'>
+															<div class='text-[12px] text-[#464650]'>
+																{l1Label}
+															</div>
+															<div class='truncate text-[16px] font-bold text-[#393941]'>
+																{item?.key ?? '-'}
+															</div>
+														</div>
+														<div class='flex flex-none flex-row items-end gap-6'>
+															{showPlannedHours.value ? (
+																<>
+																	<div class='w-[200px] text-right'>
+																		<div class='text-[12px] text-[#464650]'>
+																			{t(
+																				'PLANNED_HOURS_LABEL'
+																			) ??
+																				'Total time planned hours'}
+																		</div>
+																		<div class='text-[16px] font-bold text-[#464650]'>
+																			{formatHours(planned)}
+																		</div>
+																	</div>
+																	<div class='w-[480px]'>
+																		<div class='flex items-center justify-between gap-5'>
+																			<div class='flex items-center gap-2'>
+																				<span
+																					class='inline-block h-3 w-3 rounded-full ring-2 ring-white'
+																					style={{
+																						background:
+																							'#3F8D81',
+																					}}
+																				/>
+																				<span class='text-[12px] text-[#464650]'>
+																					{t(
+																						'TOTAL_TIME_SPENT_LABEL'
+																					) ??
+																						'Total time spent'}
+																				</span>
+																				<span class='text-[12px] font-bold text-[#464650]'>
+																					{`${formatHours(spent)} (${Math.round(spent / 8)} days)`}
+																				</span>
+																			</div>
+																			<div class='flex items-center gap-2'>
+																				<span
+																					class='inline-block h-3 w-3 rounded-full ring-2 ring-white'
+																					style={{
+																						background:
+																							'#B1DED3',
+																					}}
+																				/>
+																				<span class='text-[12px] text-[#464650]'>
+																					{t(
+																						'TOTAL_TIME_LEFT_LABEL'
+																					) ??
+																						'Total time left'}
+																				</span>
+																				<span class='text-[12px] font-bold text-[#464650]'>
+																					{`${formatHours(Math.max(planned - spent, 0))} (${Math.max(Math.round((planned - spent) / 8), 0)} days)`}
+																				</span>
+																			</div>
+																		</div>
+																	</div>
+																</>
+															) : (
+																<div class='text-right'>
+																	<div class='text-[12px] text-[#464650]'>
+																		{t('HOURS_LABEL') ??
+																			'Time spent'}
+																	</div>
+																	<div class='text-[16px] font-bold text-[#464650]'>
+																		{formatHours(spent)}
+																	</div>
+																</div>
+															)}
+														</div>
+													</div>
+													{showPlannedHours.value && (
+														<div class='flex items-center justify-end pt-1'>
+															<div class='relative flex h-[28px] w-[480px] overflow-hidden rounded'>
+																<div
+																	class='relative flex items-center justify-center bg-[#3F8D81] text-[14px] text-white'
+																	style={{
+																		width: pctSpent + '%',
+																	}}
+																>
+																	{pctSpent}%
+																</div>
+																<div
+																	class='relative flex items-center justify-center bg-[#B1DED3] text-[14px] text-[#464650]'
+																	style={{ width: pctLeft + '%' }}
+																>
+																	{pctLeft}%
+																</div>
+															</div>
+														</div>
+													)}
+												</div>
+											) : (
+												<div class='flex items-end justify-between gap-4 border-b border-[#d7dee3] bg-white px-3 py-2'>
+													<div class='min-w-0'>
+														<div class='text-[12px] text-[#464650]'>
+															{level === 2 ? l2Label : l3Label}
+														</div>
+														<div class='truncate text-[14px] font-bold text-[#464650]'>
+															{item?.key ?? '-'}
+														</div>
+													</div>
+													<div class='flex flex-none items-center gap-6'>
+														{showPlannedHours.value && (
+															<div class='w-[140px] text-right'>
+																<div class='text-[12px] text-[#464650]'>
+																	{t('PLANNED_HOURS_LABEL') ??
+																		'Planned hours'}
+																</div>
+																<div class='text-[16px] font-bold text-[#464650]'>
+																	{formatHours(
+																		item?.plannedHours
+																	)}
+																</div>
+															</div>
+														)}
+														<div class='w-[140px] text-right'>
+															<div class='text-[12px] text-[#464650]'>
+																{t('HOURS_LABEL') ?? 'Time spent'}
+															</div>
+															<div class='text-[16px] font-bold text-[#464650]'>
+																{formatHours(item?.duration)}
+															</div>
+														</div>
+													</div>
+												</div>
+											)}
+
+											{level < maxLevel && item?.subGroups?.length ? (
+												<div class='mt-2'>
+													{LevelList(item.subGroups, level + 1)}
+												</div>
+											) : null}
+										</li>
+									);
+								})}
+							</ul>
+						);
+					};
+
+					return LevelList(results.value, 1);
+				})()}
+			</div>
 		</div>
 	);
 });

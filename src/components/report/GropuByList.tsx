@@ -33,7 +33,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 	const groupByRef = useSignal<HTMLElement>();
 
 	return (
-		<div ref={groupByRef} class='border-sourface-20 border-t py-3'>
+		<div ref={groupByRef} class='py-3'>
 			<div class='brickly-logo-pdf-download flex hidden justify-end'>
 				<div class='px-6 py-4 sm:text-center [&_svg]:sm:inline'>
 					{getIcon('BricklyRedLogo')}
@@ -114,8 +114,14 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 								? 2
 								: 3;
 
+					const toHHMM = (n: number) => {
+						const totalMin = Math.round(Math.max(n, 0) * 60);
+						const h = Math.floor(totalMin / 60);
+						const m = totalMin % 60;
+						return `${h}:${String(m).padStart(2, '0')}`;
+					};
 					const formatHours = (n?: number) =>
-						typeof n === 'number' ? `${Number(n.toFixed(2))} h` : '-';
+						typeof n === 'number' ? `${toHHMM(n)} h` : '-';
 
 					const l1Label = valueL1Selected.value;
 					const l2Label = valueL2Selected.value;
@@ -124,11 +130,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 					const LevelList = (items: any[], level: number) => {
 						if (!items?.length) return null;
 						return (
-							<ul
-								class={['space-y-2', level > 1 ? 'ml-3 border-l pl-3' : ''].join(
-									' '
-								)}
-							>
+							<ul class={['space-y-2', level > 1 ? 'ml-3 pl-3' : ''].join(' ')}>
 								{items.map((item) => {
 									// progress values for level 1
 									const planned = Number(item?.plannedHours || 0);
@@ -142,7 +144,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 									return (
 										<li>
 											{level === 1 ? (
-												<div class='flex flex-col gap-2 rounded-md border border-[#d7dee3] bg-white p-3'>
+												<div class='flex flex-col gap-2 border-b border-[#d7dee3] bg-white p-3'>
 													<div class='flex items-end justify-between gap-4'>
 														<div class='min-w-0'>
 															<div class='text-[12px] text-[#464650]'>
@@ -153,19 +155,8 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 															</div>
 														</div>
 														<div class='flex flex-none flex-row items-end gap-6'>
-															{showPlannedHours.value ? (
+															{l1Label === t('PROJECT_LABEL') ? (
 																<>
-																	<div class='w-[200px] text-right'>
-																		<div class='text-[12px] text-[#464650]'>
-																			{t(
-																				'PLANNED_HOURS_LABEL'
-																			) ??
-																				'Total time planned hours'}
-																		</div>
-																		<div class='text-[16px] font-bold text-[#464650]'>
-																			{formatHours(planned)}
-																		</div>
-																	</div>
 																	<div class='w-[480px]'>
 																		<div class='flex items-center justify-between gap-5'>
 																			<div class='flex items-center gap-2'>
@@ -179,8 +170,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 																				<span class='text-[12px] text-[#464650]'>
 																					{t(
 																						'TOTAL_TIME_SPENT_LABEL'
-																					) ??
-																						'Total time spent'}
+																					)}
 																				</span>
 																				<span class='text-[12px] font-bold text-[#464650]'>
 																					{`${formatHours(spent)} (${Math.round(spent / 8)} days)`}
@@ -197,8 +187,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 																				<span class='text-[12px] text-[#464650]'>
 																					{t(
 																						'TOTAL_TIME_LEFT_LABEL'
-																					) ??
-																						'Total time left'}
+																					)}
 																				</span>
 																				<span class='text-[12px] font-bold text-[#464650]'>
 																					{`${formatHours(Math.max(planned - spent, 0))} (${Math.max(Math.round((planned - spent) / 8), 0)} days)`}
@@ -208,21 +197,34 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 																	</div>
 																</>
 															) : (
-																<div class='text-right'>
-																	<div class='text-[12px] text-[#464650]'>
-																		{t('HOURS_LABEL') ??
-																			'Time spent'}
+																<>
+																	{showPlannedHours.value && (
+																		<div class='w-[200px] text-right'>
+																			<div class='text-[12px] text-[#464650]'>
+																				{t(
+																					'PLANNED_HOURS_LABEL'
+																				)}
+																			</div>
+																			<div class='text-[16px] font-bold text-[#464650]'>
+																				{`${formatHours(planned)} (${Math.round(planned / 8)} ${'days'})`}
+																			</div>
+																		</div>
+																	)}
+																	<div class='w-[140px] text-right'>
+																		<div class='text-[12px] text-[#464650]'>
+																			{t('DURATION_LABEL')}
+																		</div>
+																		<div class='text-[16px] font-bold text-[#464650]'>
+																			{formatHours(spent)}
+																		</div>
 																	</div>
-																	<div class='text-[16px] font-bold text-[#464650]'>
-																		{formatHours(spent)}
-																	</div>
-																</div>
+																</>
 															)}
 														</div>
 													</div>
-													{showPlannedHours.value && (
+													{l1Label === t('PROJECT_LABEL') && (
 														<div class='flex items-center justify-end pt-1'>
-															<div class='relative flex h-[28px] w-[480px] overflow-hidden rounded'>
+															<div class='relative flex h-[28px] w-[480px] overflow-hidden'>
 																<div
 																	class='relative flex items-center justify-center bg-[#3F8D81] text-[14px] text-white'
 																	style={{
@@ -267,7 +269,7 @@ export const GroupByList = component$<GroupByListProps>(({ data, from, to }) => 
 														)}
 														<div class='w-[140px] text-right'>
 															<div class='text-[12px] text-[#464650]'>
-																{t('HOURS_LABEL') ?? 'Time spent'}
+																{t('DURATION_LABEL')}
 															</div>
 															<div class='text-[16px] font-bold text-[#464650]'>
 																{formatHours(item?.duration)}

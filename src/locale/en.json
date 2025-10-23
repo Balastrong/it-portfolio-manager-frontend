@@ -329,5 +329,7 @@
 	"PLACEHOLDER_INSERT_CUSTOMER": "Insert customer...",
 	"PLACEHOLDER_INSERT_PROJECT": "Insert project...",
 	"PLACEHOLDER_INSERT_TASK": "Insert task...",
-	"PLANNED_HOURS": "Planned hours: #hours h"
+	"PLANNED_HOURS": "Planned hours: #hours h",
+	"TOTAL_TIME_SPENT_LABEL": "Total time spent",
+	"TOTAL_TIME_LEFT_LABEL": "Total time left"
 }

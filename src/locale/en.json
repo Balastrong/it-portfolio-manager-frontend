@@ -330,6 +330,8 @@
 	"PLACEHOLDER_INSERT_PROJECT": "Insert project...",
 	"PLACEHOLDER_INSERT_TASK": "Insert task...",
 	"PLANNED_HOURS": "Planned hours: #hours h",
+	"TIME_SPENT_LABEL": "Time spent",
 	"TOTAL_TIME_SPENT_LABEL": "Total time spent",
-	"TOTAL_TIME_LEFT_LABEL": "Total time left"
+	"TOTAL_TIME_LEFT_LABEL": "Total time left",
+	"TOTAL_TIME_PLANNED_LABEL": "Total time planned hours"
 }

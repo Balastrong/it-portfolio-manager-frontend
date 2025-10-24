@@ -129,3 +129,12 @@ export const parametersHandler = sync$((key: string, values: string[]) => {
 
 	window.history.replaceState(null, '', `?${urlSearchParams.toString()}`);
 });
+
+const toHHMM = (n: number) => {
+	const totalMin = Math.round(Math.max(n, 0) * 60);
+	const h = Math.floor(totalMin / 60);
+	const m = totalMin % 60;
+	return `${h}:${String(m).padStart(2, '0')}`;
+};
+
+export const formatHours = (n?: number) => (typeof n === 'number' ? `${toHHMM(n)} h` : '-');

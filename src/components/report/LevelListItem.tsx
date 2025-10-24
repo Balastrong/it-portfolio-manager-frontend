@@ -24,7 +24,9 @@ export const LevelListItem = component$<LevelListItemProps>(
 		if (level === 1) {
 			return (
 				<div class='flex flex-col gap-2 border-b border-[#d7dee3] bg-white p-3'>
-					<div class='flex items-start justify-between gap-4'>
+					<div
+						class={`flex items-start justify-between gap-4 ${isProjectLevel ? 'flex-col md:flex-row lg:flex-row' : ''}`}
+					>
 						<div class='min-w-0 flex-1'>
 							<div class='text-[12px] text-[#464650]'>{l1Label}</div>
 							<div class='truncate text-[16px] font-bold text-[#393941]'>
@@ -33,7 +35,7 @@ export const LevelListItem = component$<LevelListItemProps>(
 						</div>
 						<div class='flex flex-none flex-col gap-2'>
 							{isProjectLevel ? (
-								<div class='flex items-end gap-6'>
+								<div class='flex flex-col items-end gap-6 md:flex-row lg:flex-row'>
 									{showPlannedHours && (
 										<div class='text-right'>
 											<div class='text-[12px] text-[#464650]'>

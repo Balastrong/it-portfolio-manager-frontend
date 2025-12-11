@@ -8,8 +8,52 @@ import {
 	ReportTimeEntry,
 } from '@models/report';
 import { TimeEntry } from '@models/timeEntry';
+import { BurndownChartData } from 'src/components/charts/BurndownChart';
 import { formatDateString, getDaysInRange } from './dates';
 import { getProjectCateogriesProp } from './timesheet';
+
+export const burndownChartAdapter = (
+	data: ReportTimeEntry[],
+	from: Date,
+	to: Date
+): BurndownChartData => {
+	const dateRange = getDaysInRange(from, to).map((date) => formatDateString(date.date));
+
+	// Calculate total planned hours (sum of unique project planned hours)
+	const projectPlannedHours = new Map<string, number>();
+	data.forEach((entry) => {
+		if (!projectPlannedHours.has(entry.project.name)) {
+			projectPlannedHours.set(entry.project.name, entry.plannedHours || 0);
+		}
+	});
+	const totalPlannedHours = Array.from(projectPlannedHours.values()).reduce(
+		(sum, hours) => sum + hours,
+		0
+	);
+
+	// Calculate cumulative actual hours worked per day
+	let cumulativeActualHours = 0;
+	const actualHours = dateRange.map((date) => {
+		const dailyHours = data
+			.filter((entry) => entry.date === date)
+			.reduce((sum, entry) => sum + entry.hours, 0);
+
+		cumulativeActualHours += dailyHours;
+		return cumulativeActualHours;
+	});
+
+	// Calculate ideal burndown line (linear decrease from total planned to 0)
+	const idealBurndownHours = dateRange.map((_, index) => {
+		const progress = index / (dateRange.length - 1 || 1);
+		return totalPlannedHours - totalPlannedHours * progress;
+	});
+
+	return {
+		dates: dateRange,
+		plannedHours: idealBurndownHours,
+		actualHours,
+	};
+};
 
 export const columnChartSeriesAdapter = (
 	data: ReportTimeEntry[],

@@ -43,14 +43,14 @@ export const burndownChartAdapter = (
 	});
 
 	// Calculate ideal burndown line (linear decrease from total planned to 0)
-	const plannedHours = dateRange.map((_, index) => {
+	const idealBurndownHours = dateRange.map((_, index) => {
 		const progress = index / (dateRange.length - 1 || 1);
 		return totalPlannedHours - totalPlannedHours * progress;
 	});
 
 	return {
 		dates: dateRange,
-		plannedHours,
+		plannedHours: idealBurndownHours,
 		actualHours,
 	};
 };

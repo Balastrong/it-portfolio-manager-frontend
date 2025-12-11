@@ -5,7 +5,7 @@ import { getFormattedHours } from 'src/utils/timesheet';
 
 export type BurndownChartData = {
 	dates: string[]; // Array of date strings (YYYY-MM-DD)
-	plannedHours: number[]; // Cumulative planned hours remaining
+	plannedHours: number[]; // Ideal burndown line (planned hours remaining)
 	actualHours: number[]; // Cumulative actual hours worked
 };
 

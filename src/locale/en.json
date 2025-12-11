@@ -355,5 +355,7 @@
 	"CHATBOT_TIP_4": "Domanda 4",
 	"ERROR_PAGE_TITLE": "Something went wrong",
 	"ERROR_PAGE_MESSAGE_1": "We're working to fix the problem. Please try again later.",
-	"ERROR_PAGE_MESSAGE_2": "If the problem persists, contact support."
+	"ERROR_PAGE_MESSAGE_2": "If the problem persists, contact support.",
+	"SHOW_BURNDOWN_CHART": "Show Burndown Chart",
+	"BURNDOWN_CHART_TITLE": "Burndown Chart"
 }
